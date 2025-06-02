@@ -54,3 +54,5 @@ export function runLightAI(botId) {
     renderDashboard();
   }
 }
+<script type="module" src="./bot-controller/bot-controller.js"></script>
+<script type="module" src="./dashboard/dashboard.js"></script>
