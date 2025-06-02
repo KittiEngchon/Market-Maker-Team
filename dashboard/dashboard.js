@@ -1,10 +1,11 @@
-import { bots, runLightAI } from '../bot-controller.js'; // ปรับ path ตามโครงสร้างไฟล์จริง
+import { bots, runLightAI } from '../bot-controller/bot-controller.js';
 
 let connectedBotId = null;
 
-function renderDashboard() {
+export function renderDashboard() {
   const dash = document.getElementById("dashboard");
   dash.innerHTML = "";
+
   bots.forEach(bot => {
     const card = document.createElement("div");
     card.className = "bot-card";
@@ -32,7 +33,6 @@ function renderDashboard() {
       <div class="bot-controls">
         <button ${connectedBotId === bot.id ? "disabled" : ""} onclick="connectBot(${bot.id})">เชื่อมต่อ</button>
         <button ${connectedBotId === bot.id ? "" : "disabled"} onclick="disconnectBot()">ตัดการเชื่อมต่อ</button>
-        <button ${connectedBotId === bot.id ? "" : "disabled"} onclick="runLightAI(${bot.id})">⚡ รัน AI เบา</button>
       </div>
       <div class="chat-box" ${connectedBotId === bot.id ? "" : "style='display:none;'"} >
         <input type="text" id="chatInput-${bot.id}" placeholder="พิมพ์ข้อความ..." />
@@ -64,11 +64,14 @@ window.connectBot = async function(id) {
     bot.wallet = walletAddress;
     bot.status = "เชื่อมต่อแล้ว";
     connectedBotId = id;
+
+    runLightAI(id);  // รัน AI วิเคราะห์ทันทีหลังเชื่อมต่อ
     renderDashboard();
+
   } catch (err) {
     alert("เชื่อมต่อ MetaMask ล้มเหลว: " + err.message);
   }
-};
+}
 
 window.disconnectBot = function() {
   if (!connectedBotId) return;
@@ -78,7 +81,7 @@ window.disconnectBot = function() {
   bot.status = "ยังไม่เชื่อมต่อ";
   connectedBotId = null;
   renderDashboard();
-};
+}
 
 window.sendMessage = function(id) {
   const input = document.getElementById(`chatInput-${id}`);
@@ -90,12 +93,15 @@ window.sendMessage = function(id) {
   }
   alert(`ส่งข้อความไปยัง Bot ID ${id}: "${msg}"`);
   input.value = "";
-};
+
+  runLightAI(id); // รัน AI ทุกครั้งที่ส่งข้อความ (ถ้าต้องการ)
+  renderDashboard();
+}
 
 // ตรวจสอบการเปลี่ยนบัญชี MetaMask
 window.ethereum?.on('accountsChanged', (accounts) => {
   if (accounts.length === 0) {
-    disconnectBot();
+    window.disconnectBot();
   } else if (connectedBotId !== null) {
     const bot = bots.find(b => b.id === connectedBotId);
     if (bot) {
@@ -113,3 +119,4 @@ window.ethereum?.on('chainChanged', () => {
 window.onload = () => {
   renderDashboard();
 };
+
