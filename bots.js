@@ -115,3 +115,21 @@ async function connectBot(id) {
     alert("เชื่อมต่อ MetaMask ล้มเหลว: " + err.message);
   }
 }
+window.ethereum?.on('accountsChanged', (accounts) => {
+  if (accounts.length === 0) {
+    // กระเป๋าถูกตัดการเชื่อมต่อ
+    disconnectBot();
+  } else if (connectedBotId !== null) {
+    // อัพเดต wallet address ของบอทที่เชื่อมต่ออยู่
+    const bot = bots.find(b => b.id === connectedBotId);
+    if (bot) {
+      bot.wallet = accounts[0];
+      renderDashboard();
+    }
+  }
+});
+
+window.ethereum?.on('chainChanged', (chainId) => {
+  // ถ้าต้องการรองรับการเปลี่ยนเครือข่าย ให้รีเฟรชหน้าเว็บ
+  window.location.reload();
+});
