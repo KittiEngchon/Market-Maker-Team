@@ -1,16 +1,223 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bot Control Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <h1>Bot Control Dashboard</h1>
-  <div id="dashboard"></div>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f6f9;
+    padding: 20px;
+  }
+  .bot-card {
+    background: white;
+    border-radius: 15px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .bot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .bot-info {
+    flex-grow: 1;
+    margin-left: 10px;
+  }
+  .bot-name {
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .bot-team {
+    font-style: italic;
+    color: #007bff;
+    margin-bottom: 6px;
+  }
+  .bot-role {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  .wallet, .roi, .stars, .status {
+    font-size: 13px;
+  }
+  .wallet {
+    color: #28a745; /* สีเขียวยอดเงิน */
+    font-weight: bold;
+  }
+  .roi {
+    color: #28a745; /* สีเขียว ROI */
+    font-weight: bold;
+  }
+  .stars {
+    color: #f5c518; /* สีทองดาว */
+    font-size: 18px;
+  }
+  .status {
+    font-weight: bold;
+    color: #007bff;
+  }
+  .section {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+  }
+  .label {
+    font-weight: bold;
+    color: #333;
+  }
+  .bot-controls {
+    margin-top: 12px;
+  }
+  button {
+    padding: 6px 12px;
+    margin-right: 6px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  .chat-box {
+    margin-top: 10px;
+    display: flex;
+  }
+  .chat-box input {
+    flex-grow: 1;
+    padding: 6px;
+    margin-right: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+</style>
 
-  <script type="module" src="./bot-controller/bot-controller.js"></script>
-  <script type="module" src="./dashboard/dashboard.js"></script>
-</body>
-</html>
+<div id="dashboard"></div>
+
+<script>
+  const bots = [
+    { id: 1, name: "Market Maker", team: "Market Maker Team", role: "ทำราคาในตลาดให้ดูน่าสนใจ / ลดความผันผวน", wallet: "", roi: 12.5, stars: 5, status: "ยังไม่เชื่อมต่อ", did: "MKMKR-001", gig: "Stabilizer / Vol Controller", coins: "GEM, CORE, TIME, NOVA", rewards: 35, lastMsg: "พร้อมทำราคา" },
+    { id: 2, name: "Arbitrage Bot", team: "Market Maker Team", role: "หาราคาแตกต่างระหว่าง DEX ทำกำไร", wallet: "", roi: 8.1, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "ARB-002", gig: "Price Hunter", coins: "GEM, CORE, TIME", rewards: 20, lastMsg: "รอจับจังหวะ" },
+    { id: 3, name: "Impact Bot", team: "Market Maker Team", role: "ซื้อ/ขายเพื่อทำให้ตลาดเคลื่อนไหว", wallet: "", roi: 10.3, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "IMP-003", gig: "Market Mover", coins: "GEM, TIME, NOVA", rewards: 25, lastMsg: "เตรียมเข้าเทรด" },
+    { id: 4, name: "Rebalancer", team: "Market Maker Team", role: "คอยปรับสัดส่วน LP เพื่อรักษาเสถียรภาพ", wallet: "", roi: 9.7, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "REB-004", gig: "LP Adjuster", coins: "CORE, NOVA", rewards: 22, lastMsg: "รอปรับสมดุล" },
+    { id: 5, name: "Auto Swapper", team: "Market Maker Team", role: "แปลงเหรียญอัตโนมัติตามสัญญาณ", wallet: "", roi: 7.5, stars: 3, status: "ยังไม่เชื่อมต่อ", did: "AUTOSWAP-005", gig: "Swap Master", coins: "GEM, CORE, TIME", rewards: 18, lastMsg: "พร้อมสลับเหรียญ" },
+    { id: 6, name: "Multi-Arb", team: "Market Maker Team", role: "Arbitrage ข้าม Chain (รองรับอนาคต)", wallet: "", roi: 11.2, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "MULTIARB-006", gig: "Cross-chain Arb", coins: "GEM, NOVA", rewards: 30, lastMsg: "เตรียมข้ามเชน" },
+    { id: 7, name: "Portfolio Adjust", team: "Market Maker Team", role: "จัดการพอร์ตอัตโนมัติให้สมดุล", wallet: "", roi: 8.9, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "PORTADJ-007", gig: "Portfolio Manager", coins: "GEM, CORE, TIME, NOVA", rewards: 28, lastMsg: "ตรวจสอบพอร์ต" },
+    { id: 8, name: "Volume Simulator", team: "Market Maker Team", role: "จำลอง Volume การซื้อขายในตลาด", wallet: "", roi: 6.5, stars: 3, status: "ยังไม่เชื่อมต่อ", did: "VOLSIM-008", gig: "Volume Mimic", coins: "GEM, TIME", rewards: 15, lastMsg: "จำลองปริมาณซื้อขาย" },
+    { id: 9, name: "Buy Wall Bot", team: "Market Maker Team", role: "ตั้ง Buy Wall ดักราคา/หลอก AI ตัวอื่น", wallet: "", roi: 7.9, stars: 3, status: "ยังไม่เชื่อมต่อ", did: "BUYWALL-009", gig: "Price Wall Builder", coins: "GEM, CORE", rewards: 19, lastMsg: "ตั้งกำแพงซื้อ" },
+    { id: 10, name: "Sell Wall Bot", team: "Market Maker Team", role: "ตั้ง Sell Wall เพื่อกดราคาตามกลยุทธ์", wallet: "", roi: 7.3, stars: 3, status: "ยังไม่เชื่อมต่อ", did: "SELLWALL-010", gig: "Price Wall Setter", coins: "GEM, NOVA", rewards: 16, lastMsg: "ตั้งกำแพงขาย" },
+    { id: 11, name: "Trend Rider", team: "Market Maker Team", role: "วิ่งตามแนวโน้มเทรนด์เพื่อทำกำไร", wallet: "", roi: 13.2, stars: 5, status: "ยังไม่เชื่อมต่อ", did: "TREND-011", gig: "Trend Follower", coins: "CORE, TIME", rewards: 40, lastMsg: "รอเทรนด์ใหม่" },
+  ];
+
+  let connectedBotId = null;
+
+  function renderDashboard() {
+    const dash = document.getElementById("dashboard");
+    dash.innerHTML = "";
+    bots.forEach(bot => {
+      const card = document.createElement("div");
+      card.className = "bot-card";
+
+      const stars = "★".repeat(bot.stars) + "☆".repeat(5 - bot.stars);
+
+      card.innerHTML = `
+        <div class="bot-header">
+          <img src="https://via.placeholder.com/50" alt="Bot" />
+          <div class="bot-info">
+            <div class="bot-name">${bot.name}</div>
+            <div class="bot-team">Team: ${bot.team}</div>
+            <div class="bot-role">หน้าที่: ${bot.role}</div>
+            <div class="wallet">${bot.wallet ? `Wallet: ${bot.wallet}` : "Wallet: ยังไม่เชื่อมต่อ"}</div>
+            <div class="roi" style="color:${bot.roi >= 0 ? '#28a745' : '#dc3545'};">ROI: ${bot.roi > 0 ? "+" : ""}${bot.roi}%</div>
+            <div class="stars" style="color:#f5c518;">${stars}</div>
+            <div class="status" style="color:${bot.status === "กำลังทำงาน" ? "#28a745" : "#007bff"};">Status: ${bot.status}</div>
+          </div>
+          <div>
+            <button 
+              onclick="connectWallet(${bot.id})"
+              ${connectedBotId === bot.id ? "disabled" : connectedBotId !== null ? "disabled" : ""}
+            >Connect Wallet</button>
+          </div>
+        </div>
+
+        <div class="section"><span class="label">DiD:</span> ${bot.did}</div>
+        <div class="section"><span class="label">GIG:</span> ${bot.gig}</div>
+        <div class="section"><span class="label">เหรียญที่เทรดได้:</span> ${bot.coins}</div>
+        <div class="section"><span class="label">Rewards:</span> ${bot.rewards} Points</div>
+
+        <div class="bot-controls" style="margin-top: 10px;">
+          <button onclick="startBot(${bot.id})" ${connectedBotId === bot.id ? "" : "disabled"}>Start</button>
+          <button onclick="stopBot(${bot.id})" ${connectedBotId === bot.id ? "" : "disabled"}>Stop</button>
+          <button onclick="editBot(${bot.id})" ${connectedBotId === bot.id ? "" : "disabled"}>Edit</button>
+        </div>
+
+        <div class="section" style="margin-top:10px;">
+          <span class="label">ข้อความล่าสุด:</span> <span id="last-msg-${bot.id}">${bot.lastMsg}</span>
+        </div>
+
+        <div class="chat-box" style="margin-top:10px;">
+          <input type="text" id="chat-input-${bot.id}" placeholder="พิมพ์ข้อความ..." ${connectedBotId === bot.id ? "" : "disabled"} />
+          <button onclick="sendMessage(${bot.id})" ${connectedBotId === bot.id ? "" : "disabled"}>ส่ง</button>
+        </div>
+      `;
+
+      dash.appendChild(card);
+    });
+  }
+
+  function connectWallet(botId) {
+    if (connectedBotId !== null) {
+      alert("กรุณา disconnect บอทที่เชื่อมต่อก่อน");
+      return;
+    }
+
+    // จำลองการเชื่อมต่อ wallet
+    const walletAddress = prompt("กรุณาใส่ Wallet Address เพื่อเชื่อมต่อ:");
+    if (!walletAddress) return alert("ยังไม่ได้กรอกที่อยู่ Wallet");
+
+    const bot = bots.find(b => b.id === botId);
+    bot.wallet = walletAddress;
+    bot.status = "กำลังทำงาน";
+    connectedBotId = botId;
+
+    renderDashboard();
+  }
+
+  function startBot(botId) {
+    if (connectedBotId !== botId) return;
+    alert(`เริ่มต้นบอท ${bots.find(b => b.id === botId).name}`);
+    // logic เริ่มบอทจริงๆได้ที่นี่
+    bots.find(b => b.id === botId).lastMsg = "บอทกำลังทำงาน...";
+    renderDashboard();
+  }
+
+  function stopBot(botId) {
+    if (connectedBotId !== botId) return;
+    alert(`หยุดบอท ${bots.find(b => b.id === botId).name}`);
+    // logic หยุดบอทจริงๆได้ที่นี่
+    bots.find(b => b.id === botId).lastMsg = "บอทหยุดทำงาน";
+    renderDashboard();
+  }
+
+  function editBot(botId) {
+    if (connectedBotId !== botId) return;
+    const bot = bots.find(b => b.id === botId);
+    const newRole = prompt("แก้ไขหน้าที่บอท:", bot.role);
+    if (newRole !== null && newRole.trim() !== "") {
+      bot.role = newRole;
+      alert("แก้ไขสำเร็จ");
+      renderDashboard();
+    }
+  }
+
+  function sendMessage(botId) {
+    if (connectedBotId !== botId) return;
+    const input = document.getElementById(`chat-input-${botId}`);
+    const msg = input.value.trim();
+    if (!msg) return alert("กรุณาพิมพ์ข้อความ");
+    bots.find(b => b.id === botId).lastMsg = msg;
+    input.value = "";
+    renderDashboard();
+  }
+
+  renderDashboard();
+</script>
