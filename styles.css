@@ -1,0 +1,89 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f6f9;
+  padding: 20px;
+}
+.bot-card {
+  background: white;
+  border-radius: 15px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.bot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bot-info {
+  flex-grow: 1;
+  margin-left: 10px;
+}
+.bot-name {
+  font-weight: bold;
+  font-size: 20px;
+}
+.bot-team {
+  font-style: italic;
+  color: #007bff;
+  margin-bottom: 6px;
+}
+.bot-role {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+.wallet, .roi, .stars, .status {
+  font-size: 13px;
+}
+.wallet {
+  color: #28a745; /* สีเขียวยอดเงิน */
+  font-weight: bold;
+}
+.roi {
+  color: #28a745; /* สีเขียว ROI */
+  font-weight: bold;
+}
+.stars {
+  color: #f5c518; /* สีทองดาว */
+  font-size: 18px;
+}
+.status {
+  font-weight: bold;
+  color: #007bff;
+}
+.section {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #333;
+}
+.label {
+  font-weight: bold;
+  color: #333;
+}
+.bot-controls {
+  margin-top: 12px;
+}
+button {
+  padding: 6px 12px;
+  margin-right: 6px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+button:disabled {
+  background-color: #ccc;
+}
+.chat-box {
+  margin-top: 10px;
+  display: flex;
+}
+.chat-box input {
+  flex-grow: 1;
+  padding: 6px;
+  margin-right: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
