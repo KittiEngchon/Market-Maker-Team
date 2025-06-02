@@ -4,34 +4,21 @@
     background-color: #f4f6f9;
     padding: 20px;
   }
-  #dashboard {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
   .bot-card {
     background: white;
     border-radius: 15px;
     padding: 16px;
+    margin-bottom: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    width: 320px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
   }
   .bot-header {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
-  }
-  .bot-header img {
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    justify-content: space-between;
   }
   .bot-info {
     flex-grow: 1;
-    margin-left: 12px;
+    margin-left: 10px;
   }
   .bot-name {
     font-weight: bold;
@@ -40,70 +27,59 @@
   .bot-team {
     font-style: italic;
     color: #007bff;
-    margin: 4px 0;
+    margin-bottom: 6px;
   }
   .bot-role {
     font-weight: bold;
     color: #333;
-    margin-bottom: 8px;
-    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .wallet, .roi, .stars, .status {
+    font-size: 13px;
   }
   .wallet {
-    color: #28a745; /* สีเขียว */
+    color: #28a745; /* สีเขียวยอดเงิน */
     font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 6px;
   }
   .roi {
-    color: #28a745; /* สีเขียว */
+    color: #28a745; /* สีเขียว ROI */
     font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 6px;
   }
   .stars {
     color: #f5c518; /* สีทองดาว */
     font-size: 18px;
-    margin-bottom: 6px;
   }
   .status {
     font-weight: bold;
     color: #007bff;
-    margin-bottom: 10px;
   }
   .section {
-    font-size: 13px;
+    margin-top: 8px;
+    font-size: 14px;
     color: #333;
-    margin-bottom: 5px;
   }
   .label {
     font-weight: bold;
     color: #333;
   }
   .bot-controls {
-    margin-top: 10px;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+    margin-top: 12px;
   }
   button {
     padding: 6px 12px;
+    margin-right: 6px;
     border: none;
     border-radius: 6px;
     background-color: #007bff;
     color: white;
     cursor: pointer;
-    flex-grow: 1;
-    transition: background-color 0.2s ease;
   }
   button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
   }
-  button:hover:not(:disabled) {
-    background-color: #0056b3;
-  }
   .chat-box {
-    margin-top: 12px;
+    margin-top: 10px;
     display: flex;
   }
   .chat-box input {
@@ -113,156 +89,135 @@
     border-radius: 6px;
     border: 1px solid #ccc;
   }
-  #sleepAllBtn {
-    margin-bottom: 20px;
-    background-color: #dc3545;
-    width: 200px;
-    font-weight: bold;
-  }
-  #sleepAllBtn:hover {
-    background-color: #a71d2a;
-  }
 </style>
-
-<h2>Market Maker Team Dashboard (11 Bots)</h2>
-<button id="sleepAllBtn">Sleep All Bots</button>
 
 <div id="dashboard"></div>
 
 <script>
   const bots = [
-    {
-      id: 1, name: 'Market Maker', team: 'Market Maker Team', role: 'ทำราคาในตลาดให้ดูน่าสนใจ / ลดความผันผวน',
-      wallet: '0xAbc1...1234', roi: '+12.5%', stars: 5, status: 'กำลังทำงาน',
-      did: 'MKMKR-001', gig: 'Stabilizer / Vol Controller', coins: 'GEM, CORE, TIME, NOVA', rewards: '35 Points',
-      lastMsg: 'พร้อมทำราคา', img: 'https://via.placeholder.com/50?text=MM'
-    },
-    {
-      id: 2, name: 'Sniper Bot', team: 'Sniper Team', role: 'ติดตามและสไนป์ราคาเหรียญใหม่',
-      wallet: '0xDef2...5678', roi: '+15.1%', stars: 4, status: 'กำลังทำงาน',
-      did: 'SNPR-002', gig: 'Precision Targeting', coins: 'NOVA, TIME, GEM', rewards: '40 Points',
-      lastMsg: 'กำลังรอสัญญาณ', img: 'https://via.placeholder.com/50?text=SN'
-    },
-    {
-      id: 3, name: 'Whale Bot', team: 'Whale Team', role: 'ตรวจจับและจัดการพฤติกรรม Whale',
-      wallet: '0x1234...abcd', roi: '+8.9%', stars: 3, status: 'หยุดทำงาน',
-      did: 'WHALE-003', gig: 'Whale Tracker', coins: 'CORE, GEM', rewards: '20 Points',
-      lastMsg: 'พักการทำงาน', img: 'https://via.placeholder.com/50?text=WH'
-    },
-    {
-      id: 4, name: 'VC Bot', team: 'Venture Capital', role: 'ลงทุนเหรียญใหม่, คัดเลือกโครงการ',
-      wallet: '0x5678...efgh', roi: '+18.0%', stars: 5, status: 'กำลังทำงาน',
-      did: 'VCBOT-004', gig: 'Investor AI', coins: 'GEM, NOVA, TIME', rewards: '50 Points',
-      lastMsg: 'วิเคราะห์โครงการใหม่', img: 'https://via.placeholder.com/50?text=VC'
-    },
-    {
-      id: 5, name: 'Insider Bot', team: 'Insider Team', role: 'วิเคราะห์ข้อมูลภายใน, ข่าวลือ',
-      wallet: '0x9abc...4321', roi: '+10.2%', stars: 4, status: 'หยุดทำงาน',
-      did: 'INS-005', gig: 'Rumor Analyst', coins: 'CORE, NOVA', rewards: '30 Points',
-      lastMsg: 'เฝ้ารอดูข้อมูล', img: 'https://via.placeholder.com/50?text=IN'
-    },
-    {
-      id: 6, name: 'FOMO Bot', team: 'Emotion AI Team', role: 'วิเคราะห์และเทรดตามอารมณ์ตลาด',
-      wallet: '0xfedc...9876', roi: '+11.5%', stars: 3, status: 'กำลังทำงาน',
-      did: 'FOMO-006', gig: 'Emotion Detector', coins: 'TIME, GEM', rewards: '25 Points',
-      lastMsg: 'ตลาดร้อนแรง', img: 'https://via.placeholder.com/50?text=FO'
-    },
-    {
-      id: 7, name: 'Panic Bot', team: 'Emotion AI Team', role: 'เทรดเมื่อเกิด Panic ในตลาด',
-      wallet: '0xaaaa...bbbb', roi: '+9.8%', stars: 3, status: 'หยุดทำงาน',
-      did: 'PANIC-007', gig: 'Panic Buyer', coins: 'CORE, GEM', rewards: '22 Points',
-      lastMsg: 'รอจังหวะตลาด', img: 'https://via.placeholder.com/50?text=PA'
-    },
-    {
-      id: 8, name: 'Arbitrage Bot', team: 'Arbitrage Team', role: 'ทำกำไรจากราคาเหรียญต่างเชน',
-      wallet: '0xcccc...dddd', roi: '+13.7%', stars: 4, status: 'กำลังทำงาน',
-      did: 'ARB-008', gig: 'Cross-Chain Arb', coins: 'GEM, NOVA', rewards: '38 Points',
-      lastMsg: 'ตรวจจับโอกาส Arbitrage', img: 'https://via.placeholder.com/50?text=AR'
-    },
-    {
-      id: 9, name: 'Flash Loan Bot', team: 'Flash Loan Team', role: 'ใช้ Flash Loan ทำกำไร',
-      wallet: '0xeeee...ffff', roi: '+16.4%', stars: 5, status: 'กำลังทำงาน',
-      did: 'FL-009', gig: 'Flash Loan Expert', coins: 'TIME, GEM', rewards: '45 Points',
-      lastMsg: 'พร้อมทำ Flash Loan', img: 'https://via.placeholder.com/50?text=FL'
-    },
-    {
-      id: 10, name: 'Liquidity Bot', team: 'Liquidity Team', role: 'เพิ่ม/ถอนสภาพคล่อง',
-      wallet: '0x1111...2222', roi: '+7.3%', stars: 3, status: 'กำลังทำงาน',
-      did: 'LIQ-010', gig: 'Liquidity Manager', coins: 'GEM, CORE', rewards: '18 Points',
-      lastMsg: 'จัดการสภาพคล่อง', img: 'https://via.placeholder.com/50?text=LI'
-    },
-    {
-      id: 11, name: 'Pump Bot', team: 'Pump Team', role: 'เทรดตามแผน Pump & Dump',
-      wallet: '0x3333...4444', roi: '+14.0%', stars: 4, status: 'หยุดทำงาน',
-      did: 'PUMP-011', gig: 'Pump & Dump Operator', coins: 'CORE, NOVA', rewards: '32 Points',
-      lastMsg: 'รอจังหวะ Pump', img: 'https://via.placeholder.com/50?text=PU'
-    }
+    { id: 1, name: "Market Maker", team: "Market Maker Team", role: "ทำราคาในตลาดให้ดูน่าสนใจ / ลดความผันผวน", wallet: "", roi: 12.5, stars: 5, status: "ยังไม่เชื่อมต่อ", did: "MKMKR-001", gig: "Stabilizer / Vol Controller", coins: "GEM, CORE, TIME, NOVA", rewards: 35, lastMsg: "พร้อมทำราคา" },
+    { id: 2, name: "Arbitrage Bot", team: "Market Maker Team", role: "หาราคาแตกต่างระหว่าง DEX ทำกำไร", wallet: "", roi: 8.1, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "ARB-002", gig: "Price Hunter", coins: "GEM, CORE, TIME", rewards: 20, lastMsg: "รอจับจังหวะ" },
+    { id: 3, name: "Impact Bot", team: "Market Maker Team", role: "ซื้อ/ขายเพื่อทำให้ตลาดเคลื่อนไหว", wallet: "", roi: 10.3, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "IMP-003", gig: "Market Mover", coins: "GEM, TIME, NOVA", rewards: 25, lastMsg: "เตรียมเข้าเทรด" },
+    { id: 4, name: "Rebalancer", team: "Market Maker Team", role: "คอยปรับสัดส่วน LP เพื่อรักษาเสถียรภาพ", wallet: "", roi: 9.7, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "REB-004", gig: "LP Adjuster", coins: "CORE, NOVA", rewards: 22, lastMsg: "รอปรับสมดุล" },
+    { id: 5, name: "Auto Swapper", team: "Market Maker Team", role: "แปลงเหรียญอัตโนมัติตามสัญญาณ", wallet: "", roi: 7.5, stars: 3, status: "ยังไม่เชื่อมต่อ", did: "AUTOSWAP-005", gig: "Swap Master", coins: "GEM, CORE, TIME", rewards: 18, lastMsg: "พร้อมสลับเหรียญ" },
+    { id: 6, name: "Multi-Arb", team: "Market Maker Team", role: "Arbitrage ข้าม Chain (รองรับอนาคต)", wallet: "", roi: 11.2, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "MULTIARB-006", gig: "Cross-chain Arb", coins: "GEM, NOVA", rewards: 30, lastMsg: "เตรียมข้ามเชน" },
+    { id: 7, name: "Portfolio Adjust", team: "Market Maker Team", role: "จัดการพอร์ตอัตโนมัติให้สมดุล", wallet: "", roi: 8.9, stars: 4, status: "ยังไม่เชื่อมต่อ", did: "PORTADJ-007", gig: "Portfolio Manager", coins: "GEM, CORE, TIME, NOVA", rewards: 28, lastMsg: "ตรวจสอบพอร์ต" },
+    { id: 8, name: "Volume Simulator", team: "Market Maker Team", role: "จำลอง Volume การซื้อขายในตลาด", wallet: "", roi: 6.5, stars: 3, status: "ยังไม่เชื่อมต่อ", did: "VOLSIM-008", gig: "Volume Mimic", coins: "GEM, TIME", rewards: 15, lastMsg: "จำลองปริมาณซื้อขาย" },
+    { id: 9, name: "Buy Wall Bot", team: "Market Maker Team", role: "ตั้ง Buy Wall ดักราคา/หลอก AI ตัวอื่น", wallet: "", roi: 7.9, stars: 3, status: "ยังไม่เชื่อมต่อ", did: "BUYWALL-009", gig: "Price Wall Builder", coins: "GEM, CORE", rewards: 19, lastMsg: "ตั้งกำแพงซื้อ" },
+    { id: 10, name: "Sell Wall Bot", team: "Market Maker Team", role: "ตั้ง Sell Wall เพื่อกดราคาตามกลยุทธ์", wallet: "", roi: 7.3, stars: 3, status: "ยังไม่เชื่อมต่อ", did: "SELLWALL-010", gig: "Price Wall Setter", coins: "GEM, NOVA", rewards: 16, lastMsg: "ตั้งกำแพงขาย" },
+    { id: 11, name: "Trend Rider", team: "Market Maker Team", role: "วิ่งตามแนวโน้มเทรนด์เพื่อทำกำไร", wallet: "", roi: 13.2, stars: 5, status: "ยังไม่เชื่อมต่อ", did: "TREND-011", gig: "Trend Follower", coins: "CORE, TIME", rewards: 40, lastMsg: "รอเทรนด์ใหม่" },
   ];
 
-  function createStars(n) {
-    return '★'.repeat(n) + '☆'.repeat(5 - n);
+  let connectedBotId = null;
+
+  function renderDashboard() {
+    const dash = document.getElementById("dashboard");
+    dash.innerHTML = "";
+    bots.forEach(bot => {
+      const card = document.createElement("div");
+      card.className = "bot-card";
+
+      const stars = "★".repeat(bot.stars) + "☆".repeat(5 - bot.stars);
+
+      card.innerHTML = `
+        <div class="bot-header">
+          <img src="https://via.placeholder.com/50" alt="Bot" />
+          <div class="bot-info">
+            <div class="bot-name">${bot.name}</div>
+            <div class="bot-team">Team: ${bot.team}</div>
+            <div class="bot-role">หน้าที่: ${bot.role}</div>
+            <div class="wallet">${bot.wallet ? `Wallet: ${bot.wallet}` : "Wallet: ยังไม่เชื่อมต่อ"}</div>
+            <div class="roi" style="color:${bot.roi >= 0 ? '#28a745' : '#dc3545'};">ROI: ${bot.roi > 0 ? "+" : ""}${bot.roi}%</div>
+            <div class="stars" style="color:#f5c518;">${stars}</div>
+            <div class="status" style="color:${bot.status === "กำลังทำงาน" ? "#28a745" : "#007bff"};">Status: ${bot.status}</div>
+          </div>
+          <div>
+            <button 
+              onclick="connectWallet(${bot.id})"
+              ${connectedBotId === bot.id ? "disabled" : connectedBotId !== null ? "disabled" : ""}
+            >Connect Wallet</button>
+          </div>
+        </div>
+
+        <div class="section"><span class="label">DiD:</span> ${bot.did}</div>
+        <div class="section"><span class="label">GIG:</span> ${bot.gig}</div>
+        <div class="section"><span class="label">เหรียญที่เทรดได้:</span> ${bot.coins}</div>
+        <div class="section"><span class="label">Rewards:</span> ${bot.rewards} Points</div>
+
+        <div class="bot-controls" style="margin-top: 10px;">
+          <button onclick="startBot(${bot.id})" ${connectedBotId === bot.id ? "" : "disabled"}>Start</button>
+          <button onclick="stopBot(${bot.id})" ${connectedBotId === bot.id ? "" : "disabled"}>Stop</button>
+          <button onclick="editBot(${bot.id})" ${connectedBotId === bot.id ? "" : "disabled"}>Edit</button>
+        </div>
+
+        <div class="section" style="margin-top:10px;">
+          <span class="label">ข้อความล่าสุด:</span> <span id="last-msg-${bot.id}">${bot.lastMsg}</span>
+        </div>
+
+        <div class="chat-box" style="margin-top:10px;">
+          <input type="text" id="chat-input-${bot.id}" placeholder="พิมพ์ข้อความ..." ${connectedBotId === bot.id ? "" : "disabled"} />
+          <button onclick="sendMessage(${bot.id})" ${connectedBotId === bot.id ? "" : "disabled"}>ส่ง</button>
+        </div>
+      `;
+
+      dash.appendChild(card);
+    });
   }
 
-  const dashboard = document.getElementById('dashboard');
+  function connectWallet(botId) {
+    if (connectedBotId !== null) {
+      alert("กรุณา disconnect บอทที่เชื่อมต่อก่อน");
+      return;
+    }
 
-  function updateBotStatus(botId, status) {
+    // จำลองการเชื่อมต่อ wallet
+    const walletAddress = prompt("กรุณาใส่ Wallet Address เพื่อเชื่อมต่อ:");
+    if (!walletAddress) return alert("ยังไม่ได้กรอกที่อยู่ Wallet");
+
     const bot = bots.find(b => b.id === botId);
-    if (bot) {
-      bot.status = status;
+    bot.wallet = walletAddress;
+    bot.status = "กำลังทำงาน";
+    connectedBotId = botId;
+
+    renderDashboard();
+  }
+
+  function startBot(botId) {
+    if (connectedBotId !== botId) return;
+    alert(`เริ่มต้นบอท ${bots.find(b => b.id === botId).name}`);
+    // logic เริ่มบอทจริงๆได้ที่นี่
+    bots.find(b => b.id === botId).lastMsg = "บอทกำลังทำงาน...";
+    renderDashboard();
+  }
+
+  function stopBot(botId) {
+    if (connectedBotId !== botId) return;
+    alert(`หยุดบอท ${bots.find(b => b.id === botId).name}`);
+    // logic หยุดบอทจริงๆได้ที่นี่
+    bots.find(b => b.id === botId).lastMsg = "บอทหยุดทำงาน";
+    renderDashboard();
+  }
+
+  function editBot(botId) {
+    if (connectedBotId !== botId) return;
+    const bot = bots.find(b => b.id === botId);
+    const newRole = prompt("แก้ไขหน้าที่บอท:", bot.role);
+    if (newRole !== null && newRole.trim() !== "") {
+      bot.role = newRole;
+      alert("แก้ไขสำเร็จ");
       renderDashboard();
     }
   }
 
-  function connectWallet(botId) {
-    alert(`เชื่อมต่อ Wallet สำหรับ Bot ID ${botId} (ตัวอย่าง)`);
-    // TODO: ใส่โค้ดเชื่อมต่อ MetaMask หรือ Wallet จริงที่นี่
-  }
-
-  function sleepBot(botId) {
-    updateBotStatus(botId, 'หยุดทำงาน');
-    alert(`Bot ID ${botId} ถูกตั้งให้อยู่ในโหมด Sleep`);
-  }
-
-  function sleepAllBots() {
-    bots.forEach(bot => bot.status = 'หยุดทำงาน');
-    alert('ตั้ง Bot ทุกตัวเป็นโหมด Sleep แล้ว');
+  function sendMessage(botId) {
+    if (connectedBotId !== botId) return;
+    const input = document.getElementById(`chat-input-${botId}`);
+    const msg = input.value.trim();
+    if (!msg) return alert("กรุณาพิมพ์ข้อความ");
+    bots.find(b => b.id === botId).lastMsg = msg;
+    input.value = "";
     renderDashboard();
   }
-
-  function renderDashboard() {
-    dashboard.innerHTML = '';
-    bots.forEach(bot => {
-      const botCard = document.createElement('div');
-      botCard.className = 'bot-card';
-
-      botCard.innerHTML = `
-        <div class="bot-header">
-          <img src="${bot.img}" alt="${bot.name}">
-          <div class="bot-info">
-            <div class="bot-name">${bot.name}</div>
-            <div class="bot-team">${bot.team}</div>
-            <div class="bot-role">${bot.role}</div>
-          </div>
-        </div>
-        <div class="wallet"><span class="label">Wallet:</span> ${bot.wallet}</div>
-        <div class="roi"><span class="label">ROI:</span> ${bot.roi}</div>
-        <div class="stars" title="คะแนนดาว">${createStars(bot.stars)}</div>
-        <div class="status"><span class="label">Status:</span> ${bot.status}</div>
-        <div class="section"><span class="label">DID:</span> ${bot.did}</div>
-        <div class="section"><span class="label">GIG:</span> ${bot.gig}</div>
-        <div class="section"><span class="label">เหรียญ:</span> ${bot.coins}</div>
-        <div class="section"><span class="label">Rewards:</span> ${bot.rewards}</div>
-        <div class="bot-controls">
-          <button onclick="connectWallet(${bot.id})">Connect Wallet</button>
-          <button onclick="sleepBot(${bot.id})" ${bot.status === 'หยุดทำงาน' ? 'disabled' : ''}>Sleep Bot</button>
-        </div>
-      `;
-
-      dashboard.appendChild(botCard);
-    });
-  }
-
-  document.getElementById('sleepAllBtn').addEventListener('click', sleepAllBots);
 
   renderDashboard();
 </script>
