@@ -1,5 +1,5 @@
 // นำเข้า AI core ที่เราสร้างไว้
-import { analyzeMarket } from '../bots/ai/core/ai-core-light.js';
+import { analyzeMarket } from '../ai/ai-core-light.js';  // <-- แก้ path ตามโครงสร้างใหม่
 
 // ข้อมูลบอทเบื้องต้น
 export const bots = [
@@ -47,12 +47,7 @@ export function runLightAI(botId) {
 
   // วิเคราะห์ด้วย AI
   const result = analyzeMarket("MATIC/USDC", dummyPrices);
-  bot.lastMsg = `AI วิเคราะห์: ${result.signal} (${Math.round(result.confidence * 100)}%) - ${result.reason}`;
 
-  // ส่งกลับผลเพื่อให้ dashboard อัปเดต
-  if (typeof renderDashboard === "function") {
-    renderDashboard();
-  }
+  bot.lastMsg = `AI วิเคราะห์: ${result.signal} (${Math.round(result.confidence * 100)}%) - ${result.reason}`;
 }
-<script type="module" src="./bot-controller/bot-controller.js"></script>
-<script type="module" src="./dashboard/dashboard.js"></script>
+
