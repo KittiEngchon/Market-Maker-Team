@@ -75,6 +75,7 @@ button {
 }
 button:disabled {
   background-color: #ccc;
+  cursor: not-allowed;
 }
 .chat-box {
   margin-top: 10px;
@@ -87,3 +88,4 @@ button:disabled {
   border-radius: 6px;
   border: 1px solid #ccc;
 }
+
