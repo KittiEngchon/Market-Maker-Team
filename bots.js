@@ -89,3 +89,29 @@ function sendMessage(id) {
 window.onload = () => {
   renderDashboard();
 };
+async function connectBot(id) {
+  if (!window.ethereum) {
+    alert("กรุณาติดตั้ง MetaMask ก่อนใช้งาน");
+    return;
+  }
+
+  try {
+    // ขอเชื่อมต่อกับ MetaMask
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    if (!accounts || accounts.length === 0) {
+      alert("ไม่พบบัญชีกระเป๋า MetaMask");
+      return;
+    }
+    const walletAddress = accounts[0];
+
+    // เมื่อเชื่อมต่อสำเร็จ อัพเดตสถานะบอท
+    const bot = bots.find(b => b.id === id);
+    if (!bot) return;
+    bot.wallet = walletAddress;
+    bot.status = "เชื่อมต่อแล้ว";
+    connectedBotId = id;
+    renderDashboard();
+  } catch (err) {
+    alert("เชื่อมต่อ MetaMask ล้มเหลว: " + err.message);
+  }
+}
